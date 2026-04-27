@@ -1,5 +1,13 @@
 # Wedding Registry Website — Agent Configuration
 
+> ## ⏸ PROJECT PAUSED — RESUMING?
+>
+> **Read `docs/HANDOFF.md` BEFORE doing anything else.** It explains current state, the ordered next-step queue, and how to use the seven custom subagents in `.claude/agents/`.
+>
+> The project paused on **2026-04-27** after Phases 1–4 (Foundation, Admin Gift Management, Guest Experience, Stripe Payments) were code-complete. Stripe end-to-end webhook verification is the **first task** on resumption — see `docs/STRIPE_VERIFICATION.md`.
+>
+> Other key docs: `STATUS.md` (what's done/pending), `DEPLOYMENT.md` (Railway), `TESTING_STRATEGY.md` (Phase 6), `DESIGN_GUIDE.md` (visual changes).
+
 ## Project Overview
 A wedding registry website built with Next.js 14 (App Router), TypeScript, Tailwind CSS, Prisma, PostgreSQL, Stripe, and NextAuth.js.
 
