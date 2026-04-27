@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mv temp-init/.gitignore temp-init/.next temp-init/eslint.config.mjs temp-init/next.config.ts temp-init/next-env.d.ts temp-init/node_modules temp-init/package.json temp-init/package-lock.json temp-init/postcss.config.mjs temp-init/public temp-init/src temp-init/tsconfig.json .)",
+      "Bash(rmdir temp-init *)",
+      "Bash(curl -s -o /dev/null -w \"GET / -> %{http_code}\\\\n\" http://localhost:3000/)",
+      "Bash(curl -s -o /dev/null -w \"GET /checkout/success -> %{http_code}\\\\n\" http://localhost:3000/checkout/success)",
+      "Bash(curl -s -o /dev/null -w \"GET /checkout/cancelled -> %{http_code}\\\\n\" http://localhost:3000/checkout/cancelled)",
+      "Bash(curl -s -X POST -o /dev/null -w \"POST /api/webhooks/stripe \\(no signature -> 400 expected\\) -> %{http_code}\\\\n\" http://localhost:3000/api/webhooks/stripe)"
+    ]
+  }
+}

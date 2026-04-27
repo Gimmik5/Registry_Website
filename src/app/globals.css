@@ -1,0 +1,98 @@
+/* ============================================================
+   WEDDING REGISTRY — GLOBAL STYLES & LILAC THEME
+   ------------------------------------------------------------
+   This file defines the colour palette and fonts used across
+   the entire site. Changing colours here propagates everywhere.
+
+   Tailwind v4 reads these CSS variables and exposes them as
+   utility classes (e.g. bg-lilac, text-accent).
+   ============================================================ */
+
+@import "tailwindcss";
+
+/* ------------------------------------------------------------
+   ROOT COLOUR PALETTE — change these values to re-skin the site
+   ------------------------------------------------------------ */
+:root {
+  /* Primary lilac palette */
+  --color-lilac-50:  #FAF8FC;   /* Very light tint — page background */
+  --color-lilac-100: #F0E8F7;
+  --color-lilac-200: #E8DFF0;   /* Borders, dividers */
+  --color-lilac-300: #D4BFEB;
+  --color-lilac-400: #C4A6E3;   /* Lighter lilac — hover states */
+  --color-lilac-500: #9B72CF;   /* MAIN BRAND COLOUR */
+  --color-lilac-600: #8A5FC0;
+  --color-lilac-700: #7B52AF;   /* Deeper lilac — active states */
+  --color-lilac-800: #5D3E85;
+  --color-lilac-900: #2D2040;   /* Near-black dark purple — main text */
+
+  /* Neutrals */
+  --color-surface: #FFFFFF;     /* Cards, inputs */
+  --color-background: #FAF8FC;  /* Page background */
+  --color-text: #2D2040;        /* Main text colour */
+  --color-text-muted: #6B5B7B;  /* Secondary text */
+  --color-border: #E8DFF0;      /* Subtle borders */
+
+  /* Accent (gold — highlights and CTAs) */
+  --color-accent: #D4AF37;
+  --color-accent-dark: #B8932F;
+
+  /* Semantic colours */
+  --color-success: #4CAF50;
+  --color-error: #E53935;
+
+  /* Purchased gift styling */
+  --color-purchased: #B0A3BF;   /* Muted lilac-grey for greyed-out items */
+
+  /* Fonts — set via layout.tsx using Next.js font optimization */
+  --font-heading: var(--font-playfair), Georgia, serif;
+  --font-body: var(--font-inter), system-ui, -apple-system, sans-serif;
+}
+
+/* ------------------------------------------------------------
+   TAILWIND THEME — exposes variables as utility classes
+   Usage: className="bg-lilac-500 text-lilac-900"
+   ------------------------------------------------------------ */
+@theme inline {
+  /* Lilac palette */
+  --color-lilac-50:  var(--color-lilac-50);
+  --color-lilac-100: var(--color-lilac-100);
+  --color-lilac-200: var(--color-lilac-200);
+  --color-lilac-300: var(--color-lilac-300);
+  --color-lilac-400: var(--color-lilac-400);
+  --color-lilac-500: var(--color-lilac-500);
+  --color-lilac-600: var(--color-lilac-600);
+  --color-lilac-700: var(--color-lilac-700);
+  --color-lilac-800: var(--color-lilac-800);
+  --color-lilac-900: var(--color-lilac-900);
+
+  /* Semantic names */
+  --color-surface: var(--color-surface);
+  --color-background: var(--color-background);
+  --color-text: var(--color-text);
+  --color-text-muted: var(--color-text-muted);
+  --color-border: var(--color-border);
+  --color-accent: var(--color-accent);
+  --color-accent-dark: var(--color-accent-dark);
+  --color-success: var(--color-success);
+  --color-error: var(--color-error);
+  --color-purchased: var(--color-purchased);
+
+  /* Fonts */
+  --font-heading: var(--font-heading);
+  --font-body: var(--font-body);
+}
+
+/* ------------------------------------------------------------
+   GLOBAL BASE STYLES
+   ------------------------------------------------------------ */
+body {
+  background: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  color: var(--color-lilac-900);
+}

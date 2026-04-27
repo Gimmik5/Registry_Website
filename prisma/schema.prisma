@@ -1,0 +1,163 @@
+// ============================================================
+// WEDDING REGISTRY — DATABASE SCHEMA
+// ------------------------------------------------------------
+// This file defines every table in the database and how they
+// relate to each other. Prisma reads this file and:
+//   1. Generates TypeScript types we can use in our code
+//   2. Creates SQL migrations to update the database structure
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ------------------------------------------------------------
+// ENUMS — fixed sets of values used in multiple places
+// ------------------------------------------------------------
+
+// The two types of accounts: admin (the couple) or guest
+enum Role {
+  ADMIN
+  GUEST
+}
+
+// A gift's lifecycle status
+enum GiftStatus {
+  DRAFT              // Admin is still editing, not visible to guests
+  PUBLISHED          // Live on the registry, available to purchase
+  PURCHASED          // Someone has bought it (greyed out for guests)
+  PARTIALLY_FUNDED   // Group gift with some contributions but not fully funded
+}
+
+// Payment lifecycle status
+enum PaymentStatus {
+  PENDING     // Stripe session created but not yet paid
+  COMPLETED   // Payment succeeded
+  FAILED      // Payment failed
+  REFUNDED    // Payment was refunded
+}
+
+// ------------------------------------------------------------
+// USERS — admin and guest accounts
+// ------------------------------------------------------------
+model User {
+  id           String   @id @default(uuid())
+  username     String   @unique
+  passwordHash String
+  role         Role     @default(GUEST)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("users")
+}
+
+// ------------------------------------------------------------
+// GIFT CATEGORIES — groups gifts (Kitchen, Bedroom, etc.)
+// ------------------------------------------------------------
+model Category {
+  id           String   @id @default(uuid())
+  name         String   @unique
+  slug         String   @unique
+  displayOrder Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relation: one category has many gifts
+  gifts        Gift[]
+
+  @@map("categories")
+}
+
+// ------------------------------------------------------------
+// GIFTS — the core of the registry
+// ------------------------------------------------------------
+model Gift {
+  id               String      @id @default(uuid())
+  name             String
+  description      String?
+  price            Decimal     @db.Decimal(10, 2)
+  imageUrl         String?
+  sourceUrl        String?     // Original product URL (null for custom gifts)
+
+  // Category relation (optional)
+  categoryId       String?
+  category         Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  // Group gift settings
+  isGroupGift      Boolean     @default(false)
+  groupGiftTarget  Decimal?    @db.Decimal(10, 2)
+  groupGiftRaised  Decimal     @default(0) @db.Decimal(10, 2)
+
+  // Flags
+  isCustom         Boolean     @default(false)   // Manually created vs scraped
+  isFund           Boolean     @default(false)   // Open-ended contribution fund (e.g. honeymoon)
+  isPriority       Boolean     @default(false)   // Wish-list priority
+
+  // Lifecycle
+  status           GiftStatus  @default(DRAFT)
+  displayOrder     Int         @default(0)
+
+  // Timestamps
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  // Relation: one gift can have many purchases (for group gifts)
+  purchases        Purchase[]
+
+  @@map("gifts")
+  @@index([status])
+  @@index([categoryId])
+}
+
+// ------------------------------------------------------------
+// PURCHASES — records of guest payments
+// ------------------------------------------------------------
+model Purchase {
+  id                      String        @id @default(uuid())
+
+  // Which gift was purchased
+  giftId                  String
+  gift                    Gift          @relation(fields: [giftId], references: [id], onDelete: Restrict)
+
+  // Guest details
+  guestName               String
+  guestMessage            String?
+  guestEmail              String?       // Optional, for sending receipts
+
+  // Payment details
+  amount                  Decimal       @db.Decimal(10, 2)
+  stripeSessionId         String        @unique
+  stripePaymentIntentId   String?       @unique
+  paymentStatus           PaymentStatus @default(PENDING)
+
+  // Thank-you tracker
+  thanked                 Boolean       @default(false)
+  thankedAt               DateTime?
+
+  // Timestamps
+  createdAt               DateTime      @default(now())
+  updatedAt               DateTime      @updatedAt
+
+  @@map("purchases")
+  @@index([giftId])
+  @@index([paymentStatus])
+}
+
+// ------------------------------------------------------------
+// SITE CONTENT — admin-editable text and photos
+// ------------------------------------------------------------
+model SiteContent {
+  id        String   @id @default(uuid())
+  section   String   @unique   // HERO, ABOUT, STORY, VENUE, etc.
+  title     String?
+  body      String?  @db.Text
+  imageUrl  String?
+  updatedAt DateTime @updatedAt
+
+  @@map("site_content")
+}
